@@ -1,9 +1,25 @@
 version: '3'
 
 services:
+  db:
+    image: postgres:16.10-alpine3.22
+    container_name: postgres_db
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - /var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
   backend:
-    build: .
+    build: ./backend
     container_name: fastapi-backend
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - db
     ports:
       - "8000:8000"
     volumes:
@@ -18,13 +34,15 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: nextjs-frontend
+    restart: always
     ports:
       - "3000:3000"
     volumes:
       - ./frontend:/app
-      - /app/node_modules
+      - /app/node_modules/
     environment:
       - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://backend:8000
     depends_on:
       - backend
     networks:
@@ -33,3 +51,6 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  pg_data:

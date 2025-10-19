@@ -1,19 +1,12 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
-# Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+COPY package*.json .
+RUN npm install --production --force
 
-# Install dependencies
-RUN npm install
-
-# Copy project files
 COPY . .
 
-# Expose Next.js port
 EXPOSE 3000
 
-# Start the development server
-CMD ["npm", "run", "dev"]
+CMD [ "npm", "run", "dev" ]

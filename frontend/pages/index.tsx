@@ -8,6 +8,8 @@ interface Item {
   price: number
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 export default function Home() {
   const [items, setItems] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
@@ -19,7 +21,7 @@ export default function Home() {
 
   const fetchItems = async () => {
     try {
-      const response = await axios.get('/api/items')
+      const response = await axios.get(`${API_BASE_URL}/api/items`)
       setItems(response.data)
     } catch (error) {
       console.error('Error fetching items:', error)
@@ -31,7 +33,7 @@ export default function Home() {
   const addItem = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const response = await axios.post('/api/items', newItem)
+      const response = await axios.post(`${API_BASE_URL}/api/items`, newItem)
       setItems([...items, response.data])
       setNewItem({ name: '', description: '', price: 0 })
     } catch (error) {
@@ -41,7 +43,7 @@ export default function Home() {
 
   const deleteItem = async (id: number) => {
     try {
-      await axios.delete(`/api/items/${id}`)
+      await axios.delete(`${API_BASE_URL}/api/items/${id}`)
       setItems(items.filter(item => item.id !== id))
     } catch (error) {
       console.error('Error deleting item:', error)
@@ -61,7 +63,7 @@ export default function Home() {
       <h1>Next.js + FastAPI Demo</h1>
       
       <div className="add-item-form">
-        <h2>Add New Item</h2>
+        <h2>Add New uu Item</h2>
         <form onSubmit={addItem}>
           <input
             type="text"
